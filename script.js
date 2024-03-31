@@ -19,6 +19,18 @@ function drop(event) {
     draggedElement.id = window.localStorage.id;
     draggedElement.innerText = window.localStorage.id;
     draggedElement.style.backgroundColor = window.localStorage.backgroundColor;
+
+    draggedElement.addEventListener('dragstart', function (event) {
+      console.log('vsebina: ', event.target.style.backgroundColor);
+      localStorage.setItem('id', event.target.id);
+      localStorage.setItem(
+        'backgroundColor',
+        event.target.style.backgroundColor
+      );
+      event.dataTransfer.setData('text', event.target.id);
+    });
+
+    localStorage.setItem('droppedId', window.localStorage.id);
   }
 
   // If the drop target is a list item, insert the dragged item before or after it
@@ -39,6 +51,10 @@ function drop(event) {
   else if (targetElement.id === 'draggableList') {
     targetElement.appendChild(draggedElement);
   }
+
+  localStorage.removeItem('id');
+  localStorage.removeItem('backgroundColor');
+  localStorage.removeItem('droppedId');
 }
 
 const randomColor = () => {
@@ -82,14 +98,13 @@ function addItem() {
   }
 }
 
+const handleStorageChange = (event) => {
+  console.log('storage event: ', event);
+
+  if (event.key === 'droppedId') {
+    document.getElementById(event?.newValue)?.remove();
+  }
+};
 // Add event listener to Add Item button
 document.getElementById('addItemBtn').addEventListener('click', addItem);
-
-// Add event listeners to existing draggable elements
-// var draggables = document.querySelectorAll('.draggable');
-// draggables.forEach(function (draggable) {
-//   draggable.addEventListener('dragstart', function (event) {
-//     console.log('dragging start');
-//     event.dataTransfer.setData('text', event.target.id);
-//   });
-// });
+window.addEventListener('storage', handleStorageChange);
