@@ -2,6 +2,11 @@
   width: 100px;
   height: 50px;
   cursor: grab;
+  color: white;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000,
+    1px -1px 0 #000;
+  font-weight: 900;
+  border: 1px solid black;
 }
 
 .droppable {
@@ -11,4 +16,16 @@
   border: 2px dashed #ccc;
   margin-top: 20px;
   cursor: pointer;
+}
+
+#draggable-list {
+  min-height: 20vh;
+}
+
+#add-item-btn {
+  width: 100px;
+  color: white;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000,
+    1px -1px 0 #000;
+  font-weight: 900;
 }

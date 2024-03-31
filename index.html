@@ -13,17 +13,18 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div>
-      <input type="text" id="addItemInput" placeholder="Enter item" />
-      <button id="addItemBtn">Add Item</button>
-    </div>
+    <div class="">
+      <button id="add-item-btn" class="btn btn-primary text-center m-2">
+        +
+      </button>
 
-    <ul
-      id="draggableList"
-      class="list-group"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-    ></ul>
+      <ul
+        id="draggable-list"
+        class="list-group p-2"
+        ondrop="drop(event)"
+        ondragover="allowDrop(event)"
+      ></ul>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

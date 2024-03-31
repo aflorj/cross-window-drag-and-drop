@@ -3,6 +3,24 @@ function allowDrop(event) {
   event.preventDefault();
 }
 
+function generateName(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+
+const onDragStart = (event) => {
+  localStorage.setItem('id', event.target.id);
+  localStorage.setItem('backgroundColor', event.target.style.backgroundColor);
+  event.dataTransfer.setData('text', event.target.id);
+};
+
 // Function to handle dropping
 function drop(event) {
   event.preventDefault();
@@ -13,22 +31,13 @@ function drop(event) {
   // if dragged is null we are dragging the element in from another tab
   if (draggedElement == null) {
     draggedElement = document.createElement('li');
-    draggedElement.classList.add('draggable');
-    draggedElement.classList.add('list-group-item');
+    draggedElement.classList.add('draggable', 'list-group-item');
     draggedElement.setAttribute('draggable', 'true');
     draggedElement.id = window.localStorage.id;
     draggedElement.innerText = window.localStorage.id;
     draggedElement.style.backgroundColor = window.localStorage.backgroundColor;
 
-    draggedElement.addEventListener('dragstart', function (event) {
-      console.log('vsebina: ', event.target.style.backgroundColor);
-      localStorage.setItem('id', event.target.id);
-      localStorage.setItem(
-        'backgroundColor',
-        event.target.style.backgroundColor
-      );
-      event.dataTransfer.setData('text', event.target.id);
-    });
+    draggedElement.addEventListener('dragstart', (e) => onDragStart(e));
 
     localStorage.setItem('droppedId', window.localStorage.id);
   }
@@ -48,7 +57,7 @@ function drop(event) {
     }
   }
   // If the drop target is the list itself, append the dragged item to the end
-  else if (targetElement.id === 'draggableList') {
+  else if (targetElement.id === 'draggable-list') {
     targetElement.appendChild(draggedElement);
   }
 
@@ -71,31 +80,17 @@ const randomColor = () => {
 
 // Function to add item to the list
 function addItem() {
-  var input = document.getElementById('addItemInput');
-  var itemText = input.value.trim();
-  if (itemText !== '') {
-    var newListElement = document.createElement('li');
-    newListElement.className = 'draggable list-group-item';
-    newListElement.draggable = true;
-    newListElement.id = itemText;
-    newListElement.textContent = itemText;
-    newListElement.style.backgroundColor = randomColor();
-    document.getElementById('draggableList').appendChild(newListElement);
-    input.value = '';
+  const itemText = generateName(5);
+  var newListElement = document.createElement('li');
+  newListElement.className = 'draggable list-group-item';
+  newListElement.draggable = true;
+  newListElement.id = itemText;
+  newListElement.textContent = itemText;
+  newListElement.style.backgroundColor = randomColor();
+  document.getElementById('draggable-list').appendChild(newListElement);
 
-    // Add event listener to the newly created draggable element
-    newListElement.addEventListener('dragstart', function (event) {
-      console.log('vsebina: ', event.target.style.backgroundColor);
-      localStorage.setItem('id', event.target.id);
-      localStorage.setItem(
-        'backgroundColor',
-        event.target.style.backgroundColor
-      );
-      event.dataTransfer.setData('text', event.target.id);
-    });
-  } else {
-    alert('Please enter an item.');
-  }
+  // Add event listener to the newly created draggable element
+  newListElement.addEventListener('dragstart', (e) => onDragStart(e));
 }
 
 const handleStorageChange = (event) => {
@@ -106,5 +101,5 @@ const handleStorageChange = (event) => {
   }
 };
 // Add event listener to Add Item button
-document.getElementById('addItemBtn').addEventListener('click', addItem);
+document.getElementById('add-item-btn').addEventListener('click', addItem);
 window.addEventListener('storage', handleStorageChange);
