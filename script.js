@@ -16,9 +16,12 @@ function generateName(length) {
 }
 
 const onDragStart = (event) => {
+  document.getElementById('draggable-list').classList.add('drag-active');
   localStorage.setItem('id', event.target.id);
   localStorage.setItem('backgroundColor', event.target.style.backgroundColor);
   event.dataTransfer.setData('text', event.target.id);
+
+  // drag class in the window where drag started
 };
 
 // Function to handle dropping
@@ -64,6 +67,9 @@ function drop(event) {
   localStorage.removeItem('id');
   localStorage.removeItem('backgroundColor');
   localStorage.removeItem('droppedId');
+
+  // remove the drag-active class on the target window
+  document.getElementById('draggable-list').classList.remove('drag-active');
 }
 
 const randomColor = () => {
@@ -94,12 +100,28 @@ function addItem() {
 }
 
 const handleStorageChange = (event) => {
-  console.log('storage event: ', event);
-
   if (event.key === 'droppedId') {
     document.getElementById(event?.newValue)?.remove();
   }
+
+  if (event.key === 'backgroundColor') {
+    if (event.newValue) {
+      document.getElementById('draggable-list').classList.add('drag-active');
+    } else {
+      document.getElementById('draggable-list').classList.remove('drag-active');
+    }
+  }
 };
+
+const handleDragEnd = (event) => {
+  document.getElementById('draggable-list').classList.remove('drag-active');
+
+  localStorage.removeItem('id');
+  localStorage.removeItem('backgroundColor');
+  localStorage.removeItem('droppedId');
+};
+
 // Add event listener to Add Item button
 document.getElementById('add-item-btn').addEventListener('click', addItem);
 window.addEventListener('storage', handleStorageChange);
+window.addEventListener('dragend', handleDragEnd);
